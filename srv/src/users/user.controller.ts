@@ -10,15 +10,13 @@ export class UserController {
 
   @Get()
   async getAllUsers() {
-    this.logger.log('Get all users');
     const { users, totalCount } = await this.userService.findAll();
     return { users: users.map((user) => UsersResponseDto.fromUsersEntity(user)), totalCount };
   }
 
-  @Get(':page')
-  async getUsersByPage(@Param('page') page: string) {
-    this.logger.log(`UsersByPage page: ${page}`);
-    const { users, totalCount } = await this.userService.findByPage(page);
+  @Get(':params')
+  async getUsersByPage(@Param('params') params: string) {
+    const { totalCount, users } = await this.userService.findByPageAndTotal(params)
     return { users: users.map((user) => UsersResponseDto.fromUsersEntity(user)), totalCount };
   }
 }

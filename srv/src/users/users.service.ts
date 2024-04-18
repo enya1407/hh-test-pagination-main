@@ -19,17 +19,22 @@ export class UserService {
 
   // get list of all users
   async findAll(): Promise<IUsersResponse> {
-    return Promise.all([this.usersRepo.count(), this.usersRepo.find()]).then(([totalCount, users]) => ({
-      totalCount,
-      users,
-    }));
+    const [users, totalCount] = await this.usersRepo.findAndCount({
+      order: { id: 'ASC' },
+    });
+    return {totalCount, users}
   }
 
   // get list of users by page
-  async findByPage(page: string): Promise<IUsersResponse> {
-    return Promise.all([this.usersRepo.count(), this.usersRepo.find()]).then(([totalCount, users]) => ({
-      totalCount,
-      users: users.splice(20 * Number(page) - 20, 20),
-    }));
+  async findByPageAndTotal(params: string): Promise<IUsersResponse> {
+    const [page, limit] = params.split(' ').map(el=>Number(el))
+
+    const [users, totalCount] = await this.usersRepo.findAndCount({
+      order: { id: 'ASC' },
+      skip: limit * page - limit,
+      take: limit,
+    });
+
+    return {totalCount, users}
   }
 }

@@ -32,7 +32,7 @@ export const getServerSideProps = (async (ctx: GetServerSidePropsContext): Promi
   const currPage = Number(ctx.query.page) || 1
 
   try {
-    const res = await fetch(`http://localhost:3000/users/${currPage}`, {method: 'GET'})
+    const res = await fetch(`http://localhost:3000/users/${currPage} ${USERS_PER_PAGE}`, {method: 'GET'})
 
     if (!res.ok) {
       return {props: {statusCode: res.status, users: [], page: currPage, totalPages: 0}}
